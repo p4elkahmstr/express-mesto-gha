@@ -1,4 +1,5 @@
 const BadRequestError = require('../errors/BadRequestError');
+const ForbiddenError = require('../errors/ForbiddenError');
 const NotFoundError = require('../errors/NotFoundError');
 const Card = require('../models/card');
 
@@ -46,7 +47,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (!card) {
         throw new NotFoundError('Карточка по указанному _id не найдена');
       } else if (`${card.owner}` !== req.user._id) {
-        throw new BadRequestError('Нет доступа на удаление чужой карточки');
+        throw new ForbiddenError('Нет доступа на удаление чужой карточки');
       } else {
         res.send({ message: 'Карточка удалена' });
       }
