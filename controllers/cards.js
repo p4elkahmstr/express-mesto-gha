@@ -2,15 +2,28 @@ const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const Card = require('../models/card');
 
+// module.exports.createCard = (req, res, next) => {
+//   const { name, link } = req.body;
+//   Card.create({ name, link, owner: req.user._id })
+//     .then((card) => {
+//       Card.findById(card._id)
+//         .populate('owner')
+//         .then((data) => res.status(201).send(data))
+//         .catch(next(new NotFoundError('Карточка по указанному _id не найдена')));
+//     })
+//     .catch((err) => {
+//       if (err.name === 'ValidationError') {
+//         next(new BadRequestError('Произошла ошибка валидации полей'));
+//         return;
+//       }
+//       next(err);
+//     });
+// };
+
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => {
-      Card.findById(card._id)
-        .populate('owner')
-        .then((data) => res.status(201).send(data))
-        .catch(next(new NotFoundError('Карточка по указанному _id не найдена')));
-    })
+    .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Произошла ошибка валидации полей'));
@@ -46,14 +59,16 @@ module.exports.deleteCard = (req, res, next) => {
       next(err);
     });
 };
+
 module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .populate(['owner', 'likes'])
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка по указанному _id не найдена');
+      } else {
+        res.send(card);
       }
-      res.send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {

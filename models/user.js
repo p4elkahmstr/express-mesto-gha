@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    // required: [true, 'Поле "name" не заполнено'],
     default: 'Жак-Ив Кусто',
     minlength: [2, 'Минимальное количество символов - 2'],
     maxlength: [30, 'Максимальное количество символов - 30'],
@@ -13,14 +12,12 @@ const userSchema = new mongoose.Schema({
   },
   about: {
     type: String,
-    // required: [true, 'Поле "about" не заполнено'],
     default: 'Исследователь',
     minlength: [2, 'Минимальное количество символов - 2'],
     maxlength: [30, 'Максимальное количество символов - 30'],
   },
   avatar: {
     type: String,
-    // required: [true, 'Поле "avatar" не заполнено'],
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator(v) {
